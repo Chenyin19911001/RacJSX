@@ -75,8 +75,7 @@ ValueTypeArray，ValueTypePlain这两种类型是嵌套监听的，也就是arra
 
 #### computed
 computed: store中可以被间接观察的属性，也是由observable属性计算而来,声明方式有三种：  
-1)全对象声明方式(包括value和dep):  
-这种情况下，store是不会自动解析computed依赖的那些observable的，直接使用声明的依赖值
+1)全对象声明方式(包括value和dep): 不会自动解析computed依赖，直接使用声明的依赖值
 ```
 total: {
   dep: ['a'], // 'a'
