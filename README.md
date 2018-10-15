@@ -74,9 +74,9 @@ const ValueTypeObservable = 4 // obsevable object, 满足一定接口的对象
 ValueTypeArray，ValueTypePlain这两种类型是嵌套监听的，也就是array的每一个元素，plain object的每一个属性值也是被观察的。嵌套监听主要体现在keypath上，比如要监听 store对象的a属性（数组）的第3个plainobject的b属性，那么它的监听keypath为"a[3].b"
 
 #### computed
-computed: store中可以被间接观察的属性，也是由observable属性计算而来
-声明方式有三种：
-1)全对象声明方式，包括value和dep: 这种情况下，store是不会自动解析computed依赖的那些observable的，直接使用声明的依赖值
+    computed: store中可以被间接观察的属性，也是由observable属性计算而来
+    声明方式有三种：
+    1)全对象声明方式，包括value和dep:这种情况下，store是不会自动解析computed依赖的那些observable的，直接使用声明的依赖值
 ```
 total: {
   dep: ['a'], // 'a'
@@ -103,7 +103,7 @@ total: function() {
 监听的方式有inject和autoRun两种。
 #### 监听的配置
 dep：声明依赖，默认为全依赖
-subscriber：监听函数，
+subscriber：监听函数
 sync：是否在依赖发生变化的时候同步调用监听，默认值为false
 如果只有subscriber，其他使用默认值，可以直接传入一个function
 #### inject监听
