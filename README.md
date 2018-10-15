@@ -1,18 +1,16 @@
 # RacJSX
-Framework For Data Observers Based On RacJS, 基于RacJs实现的类似于redux/mobx的共享数据流框架
+Framework For Data Observers Based On RacJS
 
-## Demo
-
+## 基础Demo
 ```
+// 创建一个config
 const config = {
-  key: 'store',
   observable: {
-    a: [], //数组
+    a: [1], //数组
     b: 2,
     c: {
       aa: 1
-    },
-    d: someObservable
+    }
   },
   computed: {
     total: {
@@ -24,53 +22,104 @@ const config = {
       return this.a[1] + 2
     },
     total3: {
-      dep: ['a[0]', 'c.aa'],
+      dep: ['a[0]', 'd.a[0]', 'c.aa'],
       value: function() {
-        return this.a[0] + this.c.aa
+        let n = 0
+        if (this.d) {
+          n = this.d.a[0]
+        }
+        return this.a[0] + this.c.aa + n
       }
     }
   }
 }
+
+//根据config创建一个store
 let store = new Store(config)
-store.autoRun(() => {
+
+//监听store
+let disposable = store.autoRun(() => {
   console.log(store.total)
 })
-store.autoRun({
-  sync:true,
+let disposable = store.autoRun({
+  sync: true,
   subscriber: () => console.log(store.total)
 })
-store.inject({
-  sync:true,
+let disposable = store.inject({
+  sync: true,
   dep: ['xxx', 'xxx2'],
   subscriber: () => console.log(store.total)
 })
-```
-如上代码：根据config生成一个store, config主要包括3部分。
-### key
-store的唯一标志，标志当前依赖的最外层key。后续computed中的total的dep依赖为'a'，实际整体的依赖的路径为store.a
-### observable
-定义store中被观察的各个数据。数据被分为4种。
-1）数组：上面定义的a
-2）simpleValue：一些基本数据类型，数字，字符串，null，非观察对象等
-3）plainObject：{} 这种纯粹的object
-4）observable：自己定义的某种数据流对象，满足一定的接口即可
-### computed
-定义store中被观察的但是需要由observable中的数据计算而来的。每一个computed的也是一个配置。
-dep：声明依赖
-value：计算逻辑
-如果配置直接是一个function，那么就将该function作为value处理
-如果没有声明dep，那么store会自动计算该value涉及到的依赖
 
-## 监听store
-在业务层监听store，需要调用store的inject/autoRun方法，方法传入一个watch的config。
+//解除监听
+disposable.dispose()
+
+//销毁store
+store.clear()
+
+```
+### config
+config分为两个部分：observable和computed
+#### observable
+observable: store中可以被直接观察的属性。
+##### 监听类型
+被观察的属性类型分为4种：
+```
+const ValueTypeSimple = 1 // 基本数据类型,number,string,boolean,null,unobsevable object
+const ValueTypeArray = 2 // array
+const ValueTypePlain = 3 // plain object, {} 这种纯粹的object
+const ValueTypeObservable = 4 // obsevable object, 满足一定接口的对象
+```
+##### 嵌套监听
+ValueTypeArray，ValueTypePlain这两种类型是嵌套监听的，也就是array的每一个元素，plain object的每一个属性值也是被观察的。嵌套监听主要体现在keypath上，比如要监听 store对象的a属性（数组）的第3个plainobject的b属性，那么它的监听keypath为"a[3].b"
+
+#### computed
+computed: store中可以被间接观察的属性，也是由observable属性计算而来
+声明方式有三种：
+1)全对象声明方式，包括value和dep: 这种情况下，store是不会自动解析computed依赖的那些observable的，直接使用声明的依赖值
+```
+total: {
+  dep: ['a'], // 'a'
+  value: function() {
+    return this.a.length
+  }
+}
+```
+2）部分对象声明方式，只有value: 自动解析依赖
+```
+total: {
+  value: function() {
+    return this.a.length
+  }
+}
+```
+3) 函数声明方式: 自动解析依赖
+```
+total: function() {
+  return this.a[1] + 2
+}
+```
+### 监听store和解除监听
+监听的方式有inject和autoRun两种。
+#### 监听的配置
 dep：声明依赖，默认为全依赖
 subscriber：监听函数，
 sync：是否在依赖发生变化的时候同步调用监听，默认值为false
 如果只有subscriber，其他使用默认值，可以直接传入一个function
-该方法返回一个disposable
-如果想接触监听的话，直接调用disposable.dispose()方法
-如果声明了监听的dep，建议调用inject方法；没有声明，建议调用autoRun方法，自动获取依赖
-注：如果声明了dep，且调用了autoRun方法，自动获取依赖的值会覆盖声明的依赖dep；自动获取依赖会手动调用一次监听函数
-
-## 废弃store
-如果当前的store不是一个全局的，需要在合适的时候解除store，可以调用store.clear()方法
+#### inject监听
+如果已经声明了依赖，不需要store自动解析依赖，就调用inject
+#### autoRun
+如果没有声明依赖，需要store自动解析依赖，就调用autoRun。（自动解析依赖的时候会默认先执行一次监听函数）
+#### 解除监听
+inject和autoRun的返回值都是一个disposable对象，如果想解除监听，直接调用disposable.dispose()方法
+### 销毁store
+如果当前的store不是一个全局的，需要在合适的时候销毁store，可以调用store.clear()方法
+## 高级用法
+### extendsObservable
+前面都是说store的监听属性都需要在config里面进行定义，如果不想在store的config里面定义的话，也就是希望给store增加一个可监听属性，可以调用store的extendsObservable方法，之后就可以直接使用属性赋值了
+```
+let store = new Store(config)
+store.extendsObservable('d', [1, 2, 3])
+```
+### 扩展和嵌套
+前面说过store的观察类型ValueTypeObservable是可被观察的对象，其实store就是实现了可观察对象接口的对象；再结合extendsObservable用法；我们可以在一个store中进行灵活的store嵌套和扩展。PS：将store的生命和（react，react-native）这种结合起来就可以很优雅的实现多级store的数据分发
