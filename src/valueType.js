@@ -2,7 +2,7 @@ const ValueTypeSimple = 1
 const ValueTypeArray = 2
 const ValueTypePlain = 3
 const ValueTypeObservable = 4
-const { Signal } = require('../src')
+const { Signal } = require('racjs')
 
 function getValueType(value) {
   if (value === null || typeof value !== 'object') {

@@ -1,4 +1,4 @@
-const { Subject, Disposable } = require('../src')
+const { Subject, Disposable } = require('racjs')
 const { ValueTypeArray } = require('./valueType')
 
 function safeString(key) {

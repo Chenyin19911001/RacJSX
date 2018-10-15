@@ -1,5 +1,5 @@
 const { getHookValue, extendsObservableProperty } = require('./hook')
-const { Subject, Disposable, CompoundDisposable } = require('../src')
+const { Subject, Disposable, CompoundDisposable } = require('racjs')
 const Watcher = require('./watcher')
 const Computed = require('./computed')
 const { dispose } = require('./subscription')

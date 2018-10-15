@@ -1,0 +1,27 @@
+{
+  "name": "racjsx",
+  "version": "1.0.0",
+  "description": "framework for data observer based on racjs",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "racjs": "1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chenyin19911001/RacJSX.git"
+  },
+  "keywords": [
+    "racjs",
+    "racjsx",
+    "redux",
+    "mobx",
+    "rxjs"
+  ],
+  "author": "chenyin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chenyin19911001/RacJSX/issues"
+  },
+  "homepage": "https://github.com/Chenyin19911001/RacJSX#readme"
+}
