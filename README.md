@@ -102,9 +102,9 @@ total: function() {
 ### 监听store和解除监听
 监听的方式有inject和autoRun两种。
 #### 监听的配置
-dep：声明依赖，默认为全依赖
-subscriber：监听函数
-sync：是否在依赖发生变化的时候同步调用监听，默认值为false
+dep：声明依赖，默认为全依赖  
+subscriber：监听函数  
+sync：是否在依赖发生变化的时候同步调用监听，默认值为false  
 如果只有subscriber，其他使用默认值，可以直接传入一个function
 #### inject监听
 如果已经声明了依赖，不需要store自动解析依赖，就调用inject
@@ -122,4 +122,5 @@ let store = new Store(config)
 store.extendsObservable('d', [1, 2, 3])
 ```
 ### 扩展和嵌套
-前面说过store的观察类型ValueTypeObservable是可被观察的对象，其实store就是实现了可观察对象接口的对象；再结合extendsObservable用法；我们可以在一个store中进行灵活的store嵌套和扩展。PS：将store的生命和（react，react-native）这种结合起来就可以很优雅的实现多级store的数据分发
+前面说过store的观察类型ValueTypeObservable是可被观察的对象，其实store就是实现了可观察对象接口的对象；再结合extendsObservable用法；我们可以在一个store中进行灵活的store嵌套和扩展。  
+PS：将store的生命和（react，react-native）这种结合起来就可以很优雅的实现多级store的数据分发
