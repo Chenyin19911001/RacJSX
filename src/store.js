@@ -11,9 +11,9 @@ class Store {
     this.racxDisposable = new CompoundDisposable()
     this.racxAutoRun = false
     this.racxTempDeps = []
-    this.initObservable(config.observable)
+    this.initObservable(config.observable || {})
     this.racxComputed = {}
-    this.initComputed(config.computed)
+    this.initComputed(config.computed || {})
     this.racxStartId = 0
     this.racxWatchers = {}
   }

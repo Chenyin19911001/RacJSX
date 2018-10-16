@@ -109,6 +109,7 @@ sync：是否在依赖发生变化的时候同步调用监听，默认值为fals
 如果已经声明了依赖，不需要store自动解析依赖，就调用inject
 #### autoRun
 如果没有声明依赖，需要store自动解析依赖，就调用autoRun。（自动解析依赖的时候会默认先执行一次监听函数）
+注: autoRun只能解析到store当前层次，比如依赖的keyPath为'a.b.c[0].d',如果autoRun的话只能解析到'a'，这种情况建议使用inject
 #### 解除监听
 inject和autoRun的返回值都是一个disposable对象，如果想解除监听，直接调用disposable.dispose()方法
 ### 销毁store

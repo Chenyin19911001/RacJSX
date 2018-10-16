@@ -28,15 +28,27 @@ const config = {
     }
   }
 }
-let proxyStore = new Store(config)
-let proxyStore2 = new Store(config)
-proxyStore.autoRun(() => {
-  console.log(proxyStore.total3)
-})
-proxyStore.a.unshift(2)
-setTimeout(() =>proxyStore.extendsObservable('d', proxyStore2))
-setTimeout(() =>proxyStore.extendsObservable('d', {a: [300]}), 100)
-setTimeout(() =>proxyStore.extendsObservable('d', proxyStore2), 200)
-let a = proxyStore.a
-setTimeout(() => (proxyStore.a = [2]), 300)
-setTimeout(() => (proxyStore.a = a), 400)
+// let proxyStore = new Store(config)
+// let proxyStore2 = new Store(config)
+// proxyStore.autoRun(() => {
+//   console.log(proxyStore.total3)
+// })
+// proxyStore.a.unshift(2)
+// setTimeout(() =>proxyStore.extendsObservable('d', proxyStore2))
+// setTimeout(() =>proxyStore.extendsObservable('d', {a: [300]}), 100)
+// setTimeout(() =>proxyStore.extendsObservable('d', proxyStore2), 200)
+// let a = proxyStore.a
+// setTimeout(() => (proxyStore.a = [2]), 300)
+// setTimeout(() => (proxyStore.a = a), 400)
+
+let c = {}
+let s = new Store(c)
+s.extendsObservable('a', new Store(config))
+let w = {
+  dep:['a.total3'],
+  subscriber: function() {console.log(this.a.total3)}
+}
+s.inject(w)
+s.a.a.set(0, 2)
+
+
