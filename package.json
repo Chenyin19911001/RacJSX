@@ -1,11 +1,11 @@
 {
   "name": "racjsx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "framework for data observer based on racjs",
   "main": "index.js",
   "scripts": {},
   "dependencies": {
-    "racjs": "1.0.0"
+    "racjs": "^1.0.0"
   },
   "repository": {
     "type": "git",
