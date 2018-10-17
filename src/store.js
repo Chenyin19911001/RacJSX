@@ -142,6 +142,14 @@ class Store {
   getRacxSignal() {
     return this.racxSignal
   }
+
+  getRacxValue() {
+    let v = this.racxInnerObservable.getRacxValue()
+    Object.keys(this.racxComputed).forEach(key => {
+      v[key] = this[key]
+    })
+    return v
+  }
 }
 
 module.exports = Store

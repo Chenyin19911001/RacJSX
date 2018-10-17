@@ -62,6 +62,7 @@ function hookPlainObject(object) {
   proxyObject.$racxSubscription = subscription
   proxyObject.$context = {}
   defineProperties(proxyObject, object)
+  hookPlainObjectValue(proxyObject)
   return proxyObject
 }
 
@@ -91,6 +92,21 @@ function transformSubscriptionValue(newObject, key, value, initial = false) {
   !initial && sendNext(newObject.$racxSubscription, { key, value: o })
 }
 
+function hookPlainObjectValue(newObject) {
+  newObject.getRacxValue = function() {
+    let v = {}
+    Object.keys(newObject.$context).forEach(key => {
+      let o = newObject.$context[key]
+      if (o.$racxSubscription) {
+        v[key] = o.getRacxValue()
+      } else {
+        v[key] = o
+      }
+    })
+    return v
+  }
+}
+
 function hookArray(array) {
   let subscription = new Subscription(ValueTypeArray)
   let newArray = []
@@ -110,6 +126,7 @@ function hookArray(array) {
   _hookSort(newArray)
   _hookReverse(newArray)
   _hookSetter(newArray)
+  hookArrayValue(newArray)
   return newArray
 }
 
@@ -121,7 +138,11 @@ function _hookPush(array) {
     let nextValue = []
     items.forEach((item, i) => {
       let o = getHookValue(item)
-      subscribe(array.$racxSubscription, o.$racxSubscription, safeString(index + i))
+      subscribe(
+        array.$racxSubscription,
+        o.$racxSubscription,
+        safeString(index + i)
+      )
       os[i] = o
       nextValue.push({ key: safeString(index + i), value: o })
     })
@@ -284,6 +305,14 @@ function _hookSetter(array) {
   }
 }
 
+function hookArrayValue(array) {
+  array.getRacxValue = function() {
+    return array.map(o => {
+      return o.$racxSubscription ? o.getRacxValue() : o
+    })
+  }
+}
+
 function hookObservable(observable) {
   let subscription = new Subscription(ValueTypeObservable)
   observable.$racxSubscription = subscription
@@ -302,4 +331,4 @@ function hookObservable(observable) {
   return observable
 }
 
-module.exports = { getHookValue, extendsObservableProperty } 
+module.exports = { getHookValue, extendsObservableProperty }

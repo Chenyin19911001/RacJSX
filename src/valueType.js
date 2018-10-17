@@ -29,7 +29,9 @@ function isObservable(value) {
   return (
     value.getRacxSignal &&
     typeof value.getRacxSignal === 'function' &&
-    value.getRacxSignal() instanceof Signal
+    value.getRacxSignal() instanceof Signal &&
+    value.getRacxValue &&
+    typeof value.getRacxValue === 'function'
   )
 }
 

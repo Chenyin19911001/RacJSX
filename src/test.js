@@ -46,9 +46,11 @@ let s = new Store(c)
 s.extendsObservable('a', new Store(config))
 let w = {
   dep:['a.total3'],
-  subscriber: function() {console.log(this.a.total3)}
+  subscriber: function() {//console.log(this.a.total3)
+  }
 }
 s.inject(w)
 s.a.a.set(0, 2)
+console.log(s.getRacxValue())
 
 
