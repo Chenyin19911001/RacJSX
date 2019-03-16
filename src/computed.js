@@ -15,13 +15,13 @@ class Computed {
         this.dep = dep
         this.value = this.valueFunc.call(this.store)
       } else {
-      	this.autoDep()
+        this.autoDep()
       }
     }
   }
 
   autoDep() {
-  	this.store.racxAutoRun = true
+    this.store.racxAutoRun = true
     this.store.racxTempDeps = []
     this.value = this.valueFunc.call(this.store)
     this.dep = this.store.racxTempDeps
